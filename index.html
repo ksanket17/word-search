@@ -8,52 +8,59 @@
         body {
             font-family: Arial, sans-serif;
             margin: 0;
-            padding: 10px;
+            padding: 0;
             text-align: center;
             max-width: 100%;
             overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            height: 100vh;
+        }
+        
+        .container {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            max-width: 100%;
+            align-items: center;
+            padding: 0 10px;
+            box-sizing: border-box;
+            flex: 1;
+        }
+        
+        .grid-container {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            flex: 1;
+            margin: 10px 0;
         }
         
         .grid {
-            border: 2px solid #333;
+            border: 3px solid #333;
             display: inline-block;
-            margin: 10px auto;
-            max-width: 95%;
+            aspect-ratio: 1/1;
+            width: min(95vw, 95vh, 600px);
         }
         
         .row {
             display: flex;
+            width: 100%;
+            height: 12.5%; /* For 8x8 grid */
         }
         
         .cell {
-            width: 40px;
-            height: 40px;
             border: 1px solid #ccc;
             display: flex;
             justify-content: center;
             align-items: center;
             font-weight: bold;
-            font-size: 20px;
+            font-size: 5vmin;
             touch-action: none;
-        }
-        
-        /* Responsive sizing for different devices */
-        @media screen and (min-width: 768px) {
-            /* For tablets like iPad */
-            .cell {
-                width: 60px;
-                height: 60px;
-                font-size: 24px;
-            }
-        }
-        
-        @media screen and (min-width: 1024px) {
-            /* For larger tablets and desktops */
-            .cell {
-                width: 70px;
-                height: 70px;
-                font-size: 28px;
-            }
+            flex: 1;
+            aspect-ratio: 1;
+            position: relative;
         }
         
         .selected {
@@ -66,17 +73,20 @@
         }
         
         .word-list {
-            margin: 20px 0;
+            margin: 10px 0;
             padding: 10px;
             border: 1px solid #ddd;
             border-radius: 5px;
             background-color: #f9f9f9;
+            width: 100%;
+            max-width: min(95vw, 600px);
+            box-sizing: border-box;
         }
         
         .word-item {
             display: inline-block;
             margin: 5px 10px;
-            font-size: 18px;
+            font-size: min(5vw, 22px);
         }
         
         .found {
@@ -85,60 +95,68 @@
         }
         
         button {
-            padding: 12px 20px;
-            font-size: 18px;
+            padding: min(4vw, 15px) min(6vw, 25px);
+            font-size: min(5vw, 20px);
             background-color: #4a90e2;
             color: white;
             border: none;
             border-radius: 5px;
             margin: 5px;
-        }
-        
-        @media screen and (min-width: 768px) {
-            button {
-                padding: 15px 25px;
-                font-size: 20px;
-            }
-            
-            .word-item {
-                font-size: 22px;
-                margin: 8px 12px;
-            }
-            
-            .timer {
-                font-size: 24px;
-            }
-            
-            h1 {
-                font-size: 32px;
-            }
+            min-width: min(30vw, 150px);
         }
         
         .timer {
-            font-size: 20px;
+            font-size: min(6vw, 24px);
             margin: 10px 0;
+        }
+        
+        h1 {
+            font-size: min(8vw, 32px);
+            margin: 10px 0;
+        }
+        
+        .controls {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            width: 100%;
+        }
+        
+        /* iPad specific adjustments */
+        @media screen and (min-width: 768px) and (max-width: 1024px) {
+            .cell {
+                font-size: 6vmin;
+            }
+            
+            .grid {
+                width: min(90vw, 90vh, 700px);
+            }
         }
     </style>
 </head>
 <body>
-    <h1>Word Find Game</h1>
-    
-    <div class="timer">Time: <span id="minutes">00</span>:<span id="seconds">00</span></div>
-    
-    <div>
-        <button id="new-game">New Game</button>
-        <button id="reset">Reset</button>
-    </div>
-    
-    <div id="grid" class="grid"></div>
-    
-    <div class="word-list">
-        <h3>Words to Find:</h3>
-        <div id="words"></div>
+    <div class="container">
+        <h1>Word Find Game</h1>
+        
+        <div class="timer">Time: <span id="minutes">00</span>:<span id="seconds">00</span></div>
+        
+        <div class="controls">
+            <button id="new-game">New Game</button>
+            <button id="reset">Reset</button>
+        </div>
+        
+        <div class="grid-container">
+            <div id="grid" class="grid"></div>
+        </div>
+        
+        <div class="word-list">
+            <h3>Words to Find:</h3>
+            <div id="words"></div>
+        </div>
     </div>
     
     <script>
-        // Simple word bank for an 8-year-old
+        // Words appropriate for an 8-year-old
         const wordBank = [
     'CAT', 'DOG', 'SUN', 'MOON', 'STAR', 'TREE', 'BALL', 'FISH',
     'BOOK', 'JUMP', 'PLAY', 'SWIM', 'CAKE', 'COOL', 'FROG', 'KING',
@@ -303,6 +321,14 @@
                     
                     gridElement.appendChild(rowElement);
                 }
+                
+                // Apply iOS-specific touch handling
+                var cells = document.querySelectorAll('.cell');
+                for (var i = 0; i < cells.length; i++) {
+                    cells[i].style.webkitTapHighlightColor = 'rgba(0,0,0,0)';
+                    cells[i].style.webkitTouchCallout = 'none';
+                    cells[i].style.webkitUserSelect = 'none';
+                }
             },
             
             // Render the word list
@@ -337,7 +363,7 @@
                         var target = document.elementFromPoint(touch.clientX, touch.clientY);
                         self.handleStart({target: target});
                     }
-                });
+                }, {passive: false});
                 
                 // Mouse/touch move
                 document.addEventListener('mousemove', function(e) {
@@ -351,7 +377,7 @@
                         var target = document.elementFromPoint(touch.clientX, touch.clientY);
                         self.handleMove({target: target});
                     }
-                });
+                }, {passive: false});
                 
                 // Mouse/touch end
                 document.addEventListener('mouseup', function() {
@@ -360,7 +386,12 @@
                 
                 document.addEventListener('touchend', function() {
                     self.handleEnd();
-                });
+                }, {passive: false});
+                
+                // Handle touches that leave the window
+                document.addEventListener('touchcancel', function() {
+                    self.handleEnd();
+                }, {passive: false});
                 
                 // New game button
                 document.getElementById('new-game').addEventListener('click', function() {
@@ -372,6 +403,11 @@
                 document.getElementById('reset').addEventListener('click', function() {
                     self.resetGame(false);
                 });
+                
+                // Prevent iOS overscroll/bounce
+                document.body.addEventListener('touchmove', function(e) {
+                    e.preventDefault();
+                }, {passive: false});
             },
             
             // Handle selection start
