@@ -10,12 +10,15 @@
             margin: 0;
             padding: 10px;
             text-align: center;
+            max-width: 100%;
+            overflow-x: hidden;
         }
         
         .grid {
             border: 2px solid #333;
             display: inline-block;
             margin: 10px auto;
+            max-width: 95%;
         }
         
         .row {
@@ -32,6 +35,25 @@
             font-weight: bold;
             font-size: 20px;
             touch-action: none;
+        }
+        
+        /* Responsive sizing for different devices */
+        @media screen and (min-width: 768px) {
+            /* For tablets like iPad */
+            .cell {
+                width: 60px;
+                height: 60px;
+                font-size: 24px;
+            }
+        }
+        
+        @media screen and (min-width: 1024px) {
+            /* For larger tablets and desktops */
+            .cell {
+                width: 70px;
+                height: 70px;
+                font-size: 28px;
+            }
         }
         
         .selected {
@@ -63,13 +85,33 @@
         }
         
         button {
-            padding: 10px 15px;
-            font-size: 16px;
+            padding: 12px 20px;
+            font-size: 18px;
             background-color: #4a90e2;
             color: white;
             border: none;
             border-radius: 5px;
             margin: 5px;
+        }
+        
+        @media screen and (min-width: 768px) {
+            button {
+                padding: 15px 25px;
+                font-size: 20px;
+            }
+            
+            .word-item {
+                font-size: 22px;
+                margin: 8px 12px;
+            }
+            
+            .timer {
+                font-size: 24px;
+            }
+            
+            h1 {
+                font-size: 32px;
+            }
         }
         
         .timer {
